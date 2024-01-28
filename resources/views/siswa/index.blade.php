@@ -1,54 +1,131 @@
 @extends('includes.master')
 
 @section('content')
-<div class="content">
+<h2 class="mb-2 page-title">Data Siswa [PKL]</h2>
+<p class="card-text">Praktek Kerja Lapangan</p>
 
-    <div class="section-header">
-        <h1>Data Siswa</h1>
+<!-- Your existing HTML code -->
+<div class="card-body">
+    <!-- Add button -->
+    <div class="mb-3">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+            Add
+        </button>
     </div>
-    {{-- <div class="section-body">
-        dddd
-    </div> --}}
-</section>
-
-<table id="bootstrap-data-table" class="table table-striped table-bordered">
-    <thead> 
-        <tr>
+    <!-- table -->
+    <table class="table datatables" id="dataTable-1">
+        <thead>
+            <tr>
             <th>No</th>
-            <th>Nik</th>
+            <th>NIS</th>
             <th>Nama Siswa</th>
             <th>Jurusan</th>
-            <th>nama Kantor PKL</th>
+            <th>Tempat PKL</th>
             <th>Alamat PKL</th>
-           
             <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($siswa as $siswa)
-        <tr>
-            <td>{{$loop->index+1}}</td>
-            <td>{{$siswa->nik}}</td>
-            <td>{{$siswa->nama_siswa}}</td>
-            <td>{{$siswa->jurusan}}</td>
-            <td>{{$siswa->nama_tempat_pkl}}</td>
-            <td>{{$siswa->alamat_pkl}}</td>
-            <td align="center" width="200px">
-<div class="btn-group" role="group" aria-label="Action">
-    <form action="{{route('siswa.destroy',$siswa->nik)}}" method="post">
-        @csrf
-        <div class="d-flex">
-<a href="{{ route('siswa.edit', $siswa->nik) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i><span class="ml-1">Edit</span></a>
-@method('DELETE')
-<button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-eraser"></i><span class="ml-1">Delete</span></button>
-    </div>
-</form>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($siswa as $sis)
+            <tr>
+                <td>{{ $loop->index+1 }}</td>
+                <td>{{$sis->nis}}</td>
+                <td>{{$sis->nama_siswa}}</td>
+                <td>{{$sis->jurusan}}</td>
+                <td>{{$sis->tempat_pkl}}</td>
+                <td>{{$sis->alamat_pkl}}</td>
+                <td align="center">
+                    <div class="btn-group" role="group" aria-label="Action">
+                        <form action="{{ route('siswa.destroy', ['siswa' => $sis->nis]) }}" method="post">
+                            @method('DELETE')
+                            @csrf
+                            <div class="d-flex justify-content-center">
+                                <a href="#" class="badge btn-primary border-0 btn-sm mx-1 edit-button" data-toggle="modal" data-target="#">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="badge btn-danger border-0 btn-sm mx-1 show_confirm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 
-            </td>
-        </tr>
-      @endforeach
-    </tbody>
-</table>
-
+<!-- Add modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Tambah Data Siswa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for adding new data -->
+                <form action="#" method="post" id="addForm">
+                    @csrf
+                    <!-- NIS -->
+                    <div class="form-group">
+                        <label for="nis">NIS:</label>
+                        <input type="text" class="form-control @error('nis') is-invalid @enderror" id="nis" name="nis" required>
+                        @error('nis')
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    <!-- Nama Siswa -->
+                    <div class="form-group">
+                        <label for="nama_siswa">Nama Siswa:</label>
+                        <input type="text" class="form-control @error('nama_siswa') is-invalid @enderror" id="nama_siswa" name="nama_siswa" required>
+                        @error('nama_siswa')
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    <!-- Jurusan -->
+                    <div class="form-group">
+                        <label for="jurusan">Jurusan:</label>
+                        <select class="form-control" id="jurusan" name="jurusan" required>
+                            <option>Rekayasa Perangkat Lunak</option>
+                            <option>Teknik Komputer dan Jaringan</option>
+                            <option>Multimedia</option>
+                            <option>Animasi</option>
+                            <!-- Add more options if needed -->
+                        </select>
+                    </div>
+                    <!-- Tempat PKL -->
+                    <div class="form-group">
+                        <label for="tempat_pkl">Tempat PKL:</label>
+                        <input type="text" class="form-control @error('tempat_pkl') is-invalid @enderror" id="tempat_pkl" name="tempat_pkl" required>
+                        @error('tempat_pkl')
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    <!-- Alamat PKL -->
+                    <div class="form-group">
+                        <label for="alamat_pkl">Alamat PKL:</label>
+                        <textarea class="form-control @error('alamat_pkl') is-invalid @enderror" id="alamat_pkl" name="alamat_pkl" rows="3" required></textarea>
+                        @error('alamat_pkl')
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

@@ -24,8 +24,10 @@ Route::get('/login', function () {
 });
 
 Route::get('/dashboard', [homecontroller::class, 'index']);
-Route::resource('pembayaran', PembayaranController::class);
-Route::resource('siswa', siswaController::class);
+
+Route::resource('/siswa', SiswaController::class);
+
+Route::resource('/payment', PembayaranController::class);
 
 Route::get('/login',[loginController::class, 'index'])->middleware('guest');
 Route::post('/logout',[LoginController::class, 'logout']);

@@ -2,57 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Siswa;
 use Illuminate\Http\Request;
-use App\Models\siswa;
-class siswaController extends Controller
+
+class SiswaController extends Controller
 {
-    public function index()
-    {
-        $siswa=siswa::all();
-    return view('siswa.index',compact("siswa"));
+    public function index(){
+        $siswa = Siswa::all();
+        return view('siswa.index', compact('siswa'));
     }
 
-    public function store(Request $request)
-    {
-        $data_validasi = $request->validate([
-            "nik" => 'required', 
-            "nama_siswa" => 'required', 
-            "jurusan" => 'required',  
-            "nama_tempat_pkl" => 'required',
-            "alamat_pkl" => 'required', 
+    public function store(Request $request){
+        $this->validate($request, [
+            'nis' => 'required',
+            'nama_siswa' => 'required',
+            'jurusan' => 'required',
+            'tempat_pkl' => 'required',
+            'alamat_pkl' => 'required'
         ]);
-        siswa::create($data_validasi);
-        return redirect()->route('siswa.index');
-    
-       
-    }
-    
-    
-    public function create()
-    {
-        $siswa = siswa::all();
-        return view("siswa.create",compact("siswa"));
-    
-    }
-    public function destroy(siswa $siswa)
-    {
-        
-        $siswa->delete();
-        return redirect()->route('siswa.index');
-    }
-    public function edit(siswa $siswa)
-    {  
 
-        return view("siswa.edit")->with([
-         
-            'siswa' => $siswa,
-          
-        ]);
+        $siswa = new Siswa;
+
+        $siswa->nis = $request->input('nis');
+        $siswa->nama_siswa = $request->input('nama_siswa');
+        $siswa->jurusan = $request->input('jurusan');
+        $siswa->tempat_pkl = $request->input('tempat_pkl');
+        $siswa->alamat_pkl = $request->input('alamat_pkl');
+
+        $siswa->save();
+
+        return redirect('/siswa')->with('success', 'Data Berhasil Disimpan');
     }
-    public function update(Request $request, siswa $siswa)
+
+    public function destroy(Siswa $siswa)
     {
-        $siswa->update($request->all());
-        return redirect()->route('siswa.index');
+        Siswa::destroy($siswa->nis);
+        return redirect('/siswa')->with('success', 'Data Telah Dihapus');
     }
-    
 }

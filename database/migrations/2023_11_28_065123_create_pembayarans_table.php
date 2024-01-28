@@ -14,11 +14,13 @@ class CreatePembayaransTable extends Migration
     public function up()
     {
         Schema::create('pembayarans', function (Blueprint $table) {
-            $table->id();
+            $table->string('nis')->primary();
             $table->string('nama_siswa');
+            $table->string('jurusan');
             $table->string('tanggal');
             $table->string('jumlah');
-            $table->string('Gambar_transaksi');
+            $table->string('bukti_transaksi')->nullable();
+            $table->string('status');
             
             $table->timestamps();
         });

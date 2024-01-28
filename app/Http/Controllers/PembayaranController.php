@@ -2,66 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Models\pembayaran;
+use Illuminate\Support\Facades\Storage;
+
 class PembayaranController extends Controller
 {
     public function index()
     {
-        $pembayaran=pembayaran::all();
-    return view('pembayaran.index',compact("pembayaran"));
+        $payment = Payment::all();
+        return view('pembayaran.index',compact("payment"));
     }
 
-    public function store(Request $request)
-    {
-        $data_validasi = $request->validate([
-            "nama_siswa" => 'required', 
-            "tanggal" => 'required',  
-            "jumlah" => 'required',
-            "Gambar_transaksi" => 'image', 
+    public function store(Request $request){
+        $this->validate($request, [
+            'nis' => 'required',
+            'nama_siswa' => 'required',
+            'jurusan' => 'required',
+            'tanggal' => 'required',
+            'jumlah' => 'required',
+            'status' => 'required'
         ]);
-    
-        if ($request->hasFile('gambar_transaksi')) {
-            // Hapus gambar lama jika ada
-            if ($request->oldImage) {
-                Storage::delete($request->oldImage);
-            }
-    
-            // Simpan gambar baru
-            $data_validasi['Gambar_transaksi'] = $request->file('gambar_transaksi')->store('public/transaksi-images');
+
+        $payment = new Payment();
+
+        $payment->nis = $request->input('nis');
+        $payment->nama_siswa = $request->input('nama_siswa');
+        $payment->jurusan = $request->input('jurusan');
+        $payment->tanggal = $request->input('tanggal');
+        $payment->jumlah = $request->input('jumlah');
+
+        // Untuk mengunggah gambar, Anda perlu menyimpannya di direktori yang sesuai.
+        if($request->hasFile('bukti_transaksi')) {
+            $imagePath = $request->file('bukti_transaksi')->store('public/bukti_transaksi');
+            $payment->bukti_transaksi = $imagePath;
         }
-    
-        $postPembayaran = Pembayaran::create($data_validasi);
-    
-        return redirect()->route('pembayaran.index');
-    }
-    
-    
-    public function create()
-    {
-        $pembayaran = pembayaran::all();
-        return view("pembayaran.create",compact("pembayaran"));
-    
-    }
-    public function destroy(pembayaran $pembayaran)
-    {
-        
-        $pembayaran->delete();
-        return redirect()->route('pembayaran.index');
-    }
-    public function edit(pembayaran $pembayaran)
-    {  
 
-        return view("pembayaran.edit")->with([
-         
-            'pembayaran' => $pembayaran,
-          
-        ]);
+        $payment->status = $request->input('status');
+
+        $payment->save();
+
+        return redirect('/payment')->with('success', 'Data Berhasil Disimpan');
     }
-    public function update(Request $request, pembayaran $pembayaran)
+    
+    
+    public function destroy(Payment $payment)
     {
-        $pembayaran->update($request->all());
-        return redirect()->route('pembayaran.index');
+        Payment::destroy($payment->nis);
+        return redirect('/payment')->with('success', 'Data Telah Dihapus');
     }
     
 }
