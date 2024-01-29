@@ -1,4 +1,3 @@
 @extends('includes.master')
-@section
-
+@section('container')
 @endsection

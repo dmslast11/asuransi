@@ -34,6 +34,32 @@ class SiswaController extends Controller
         return redirect('/siswa')->with('success', 'Data Berhasil Disimpan');
     }
 
+    public function update(Request $request, Siswa $siswa)
+    {
+        $validateData = $request->validate([
+            'nis' => 'required',
+            'nama_siswa' => 'required',
+            'jurusan' => 'required',
+            'tempat_pkl' => 'required',
+            'alamat_pkl' => 'required',
+        ]);
+    
+        // Logging untuk melihat nilai validateData
+        info('Validated Data:', $validateData);
+    
+        try {
+            $result = Siswa::where('nis', $siswa->nis)->update($validateData);
+        } catch (\Exception $e) {
+            // Logging untuk melihat exception
+            info('Exception:', $e->getMessage());
+        }
+    
+        // Logging untuk melihat hasil dari operasi update
+        info('Update Result:', $result);
+    
+        return redirect('/siswa')->with('success', 'Data telah diupdate');  
+    }
+
     public function destroy(Siswa $siswa)
     {
         Siswa::destroy($siswa->nis);

@@ -29,19 +29,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <!-- Tambahkan stylesheet DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-
 
   </head>
   <body class="vertical  light  ">
     <div class="wrapper">
-      @include('includes.navbar')
-      @include('includes.sidebar')
+      @include('partials.navbar')
+      @include('partials.sidebar')
       <main role="main" class="main-content">
         <div class="container-fluid">
           <div class="row justify-content-center">
             <div class="col-12">
-              @yield('content')
+              @yield('container')
             </div> <!-- .col-12 -->
           </div> <!-- .row -->
         </div> <!-- .container-fluid -->
@@ -212,7 +210,7 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Script untuk inisialisasi DataTables dan menambahkan pagination -->
     <script>
@@ -231,102 +229,76 @@
     </script>
 
     <script>
+      // Notifikasi Tambah Data
       $('.add_data').click(function(event) {
-        event.preventDefault();
+      event.preventDefault();
 
-        var form = $(this).closest("form");
-        var dataAddedSuccessfully = true;
+      var form = $(this).closest("form");
+      var dataAddedSuccessfully = true;
 
-        // Close the modal
-        $('#addModal').modal('hide');
+      // Close the modal
+      $('#addModal').modal('hide');
 
-        if (dataAddedSuccessfully) {
-          // Show SweetAlert for success after the modal is closed
-          $(document).on('hidden.bs.modal', '#addModal', function () {
-              Swal.fire({
-                icon: "success",
-                title: "Data berhasil ditambahkan",
-                text: "Klik OK untuk melanjutkan",
-                showConfirmButton: true,
-              }).then(() => {
-                form.submit();
-                Swal.close();
-              });
-          });
-        } else {
-          Swal.fire({
-              icon: "error",
-              title: "Gagal menambahkan data",
-              text: "Silakan coba lagi",
+      if (dataAddedSuccessfully) {
+        // Show SweetAlert for success after the modal is closed
+        $(document).on('hidden.bs.modal', '#addModal', function () {
+            Swal.fire({
+              icon: "success",
+              title: "Data berhasil ditambahkan",
+              text: "Klik OK untuk melanjutkan",
               showConfirmButton: true,
-          });
-        }
-      });
+            }).then(() => {
+              form.submit();
+              Swal.close();
+            });
+        });
+      } else {
+        Swal.fire({
+            icon: "error",
+            title: "Gagal menambahkan data",
+            text: "Silakan coba lagi",
+            showConfirmButton: true,
+        });
+      }
+    });
 
       // Notifikasi Edit
       $('.edit_data').click(function (event) {
-        event.preventDefault();
+          event.preventDefault();
 
-        // Get the form element
-        var form = $(this).closest("form");
+          // Get the form element
+          var form = $(this).closest("form");
 
-        // Get the target modal
-        var targetModalId = $(this).attr('data-target');
-        var targetModal = $(targetModalId);
+          // Simulate updating data (you can replace this with your actual logic)
+          // For now, let's assume it's successful
+          var dataUpdatedSuccessfully = true;
 
-        // Simulate updating data (you can replace this with your actual logic)
-        // For now, let's assume it's successful
-        var dataUpdatedSuccessfully = true;
+          // Close the modal
+          $('#editModal').modal('hide');
 
-        if (dataUpdatedSuccessfully) {
-            // Show SweetAlert for success
-            Swal.fire({
-                icon: "success",
-                title: "Data berhasil diperbaharui",
-                text: "Klik OK untuk melanjutkan",
-                showConfirmButton: true,
-            }).then(() => {
-                // Close the modal
-                targetModal.modal('hide');
-                form.submit();
-            });
-        } else {
-            // Show SweetAlert for failure (if needed)
-            Swal.fire({
-                icon: "error",
-                title: "Gagal memperbaharui data",
-                text: "Silakan coba lagi",
-                showConfirmButton: true,
-            });
-        }
-      });
-    </script>
-
-    <script>
-      $(document).ready(function () {
-          // Fungsi untuk memberikan format pada input biaya
-          $('#jumlah').on('input', function () {
-              // Hapus karakter yang bukan digit atau "." dari input
-              var inputVal = $(this).val().replace(/[^0-9]/g, '');
-
-              // Format input menjadi mata uang
-              var formattedVal = formatCurrency(inputVal);
-
-              // Set nilai input dengan hasil format
-              $(this).val(formattedVal);
-          });
-
-          // Fungsi untuk memberikan format mata uang
-          function formatCurrency(value) {
-              if (!value) return '';
-
-              // Tambahkan koma setiap tiga digit dari belakang
-              var formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-              // Tambahkan "Rp " di depan
-              return 'Rp ' + formattedValue;
+          if (dataUpdatedSuccessfully) {
+              // Show SweetAlert for success
+              Swal.fire({
+                  icon: "success",
+                  title: "Data berhasil diperbaharui",
+                  text: "Klik OK untuk melanjutkan",
+                  showConfirmButton: true,
+              }).then(() => {
+                  // Close the modal
+                  $('#editModal').modal('hide');
+                  form.submit();
+              });
+          } else {
+              // Show SweetAlert for failure (if needed)
+              Swal.fire({
+                  icon: "error",
+                  title: "Gagal memperbaharui data",
+                  text: "Silakan coba lagi",
+                  showConfirmButton: true,
+              });
           }
       });
     </script>
+
   </body>
 </html>

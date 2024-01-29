@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\homecontroller;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\logincontroller;
 use App\Http\Controllers\registercontroller;
 use App\Http\Controllers\profilecontroller;
 use App\Http\Controllers\siswaController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +25,9 @@ Route::get('/login', function () {
     return view('master');
 });
 
-Route::get('/dashboard', [homecontroller::class, 'index']);
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+
+Route::get('/home', [DashboardController::class, 'index'])->name('home');
 
 Route::resource('/siswa', SiswaController::class);
 

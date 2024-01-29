@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use App\Models\pembayaran;
 use Illuminate\Support\Facades\Storage;
 
 class PembayaranController extends Controller
@@ -35,8 +34,8 @@ class PembayaranController extends Controller
 
         // Untuk mengunggah gambar, Anda perlu menyimpannya di direktori yang sesuai.
         if($request->hasFile('bukti_transaksi')) {
-            $imagePath = $request->file('bukti_transaksi')->store('public/bukti_transaksi');
-            $payment->bukti_transaksi = $imagePath;
+            $image = $request->file('bukti_transaksi')->get();
+            $payment->bukti_transaksi = $image;
         }
 
         $payment->status = $request->input('status');
@@ -46,6 +45,26 @@ class PembayaranController extends Controller
         return redirect('/payment')->with('success', 'Data Berhasil Disimpan');
     }
     
+    public function update(Request $request, Payment $payment)
+    {
+        $validateData = $request->validate([
+            'nis' => 'required',
+            'nama_siswa' => 'required',
+            'jurusan' => 'required',
+            'tanggal' => 'required',
+            'jumlah' => 'required',
+            'status' => 'required'
+        ]);
+        
+        // Proses gambar jika ada
+        if($request->file('bukti_transaksi')) {
+            $validateData['bukti_transaksi'] = $request->file('bukti_transaksi')->store('public/bukti_transaksi');
+        }
+        
+        Payment::where('nis', $payment->id)->update($validateData);
+        
+        return redirect('/payment')->with('success', 'Data telah diupdate');        
+    }
     
     public function destroy(Payment $payment)
     {
