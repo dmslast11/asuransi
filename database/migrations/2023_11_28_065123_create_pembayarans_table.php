@@ -19,9 +19,8 @@ class CreatePembayaransTable extends Migration
             $table->string('jurusan');
             $table->string('tanggal');
             $table->string('jumlah');
-            $table->string('bukti_transaksi')->nullable();
+            $table->string('bukti_transaksi');
             $table->string('status');
-            
             $table->timestamps();
         });
     }

@@ -30,6 +30,7 @@
     <!-- Tambahkan stylesheet DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    
 
 
   </head>
@@ -226,9 +227,47 @@
               info: true, // Tampilkan informasi jumlah data
               autoWidth: false, // Nonaktifkan perubahan lebar otomatis
               responsive: true, // Aktifkan responsivitas tabel
+              scrollX: true, // Aktifkan scroll horizontal
           });
       });
     </script>
+
+    <script>
+      function previewImage() {
+          const image = document.querySelector('#image-add');
+          const imagePreview = document.querySelector('.img-preview');
+
+          imagePreview.style.display = 'block';
+
+          const oFReader = new FileReader();
+          oFReader.readAsDataURL(image.files[0]);
+
+          oFReader.onload = function(oFREvent) {
+              imagePreview.src = oFREvent.target.result;
+          }
+      }
+    </script>
+
+    <script>
+      function previewImagee() {
+          const img = document.getElementById('image-edit');
+          const imgPreview = document.getElementById('imgPreview');
+
+          // Hapus elemen input file dan buat klon baru
+          const newImg = img.cloneNode(true);
+          img.parentNode.replaceChild(newImg, img);
+
+          if (newImg.files && newImg.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  imgPreview.src = e.target.result;
+                  imgPreview.style.display = 'block';
+              };
+              reader.readAsDataURL(newImg.files[0]);
+          }
+      }
+    </script>
+
 
     <script>
       $('.add_data').click(function(event) {
@@ -264,19 +303,18 @@
       });
 
       // Notifikasi Edit
-      $('.edit_data').click(function (event) {
+      $('.edit').click(function (event) {
         event.preventDefault();
 
         // Get the form element
         var form = $(this).closest("form");
 
-        // Get the target modal
-        var targetModalId = $(this).attr('data-target');
-        var targetModal = $(targetModalId);
-
         // Simulate updating data (you can replace this with your actual logic)
         // For now, let's assume it's successful
         var dataUpdatedSuccessfully = true;
+
+        // Close the modal
+        $('#editModal').modal('hide');
 
         if (dataUpdatedSuccessfully) {
             // Show SweetAlert for success
@@ -287,7 +325,7 @@
                 showConfirmButton: true,
             }).then(() => {
                 // Close the modal
-                targetModal.modal('hide');
+                $('#editModal').modal('hide');
                 form.submit();
             });
         } else {

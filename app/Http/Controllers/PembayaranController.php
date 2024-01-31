@@ -31,14 +31,12 @@ class PembayaranController extends Controller
         $payment->jurusan = $request->input('jurusan');
         $payment->tanggal = $request->input('tanggal');
         $payment->jumlah = $request->input('jumlah');
-
-        // Untuk mengunggah gambar, Anda perlu menyimpannya di direktori yang sesuai.
-        if($request->hasFile('bukti_transaksi')) {
-            $image = $request->file('bukti_transaksi')->get();
-            $payment->bukti_transaksi = $image;
-        }
-
         $payment->status = $request->input('status');
+
+        if ($request->hasFile('bukti_transaksi')) {
+            $image = $request->file('bukti_transaksi')->store('public/bukti_transaksi');
+            $payment->bukti_transaksi = $image;
+        } 
 
         $payment->save();
 
@@ -53,23 +51,38 @@ class PembayaranController extends Controller
             'jurusan' => 'required',
             'tanggal' => 'required',
             'jumlah' => 'required',
-            'status' => 'required'
+            'status' => 'required',
         ]);
         
-        // Proses gambar jika ada
-        if($request->file('bukti_transaksi')) {
+        // Ambil path file image yang lama
+        $bukti = $payment->bukti_transaksi;
+
+        // Proses file image jika disediakan
+        if ($request->file('bukti_transaksi')) {
+            // Hapus file audio yang lama jika ada
+            if ($bukti) {
+                Storage::delete($bukti);
+            }
+
+            // Simpan file audio yang baru
             $validateData['bukti_transaksi'] = $request->file('bukti_transaksi')->store('public/bukti_transaksi');
         }
         
-        Payment::where('nis', $payment->id)->update($validateData);
+        Payment::where('nis', $payment->nis)->update($validateData);
         
         return redirect('/payment')->with('success', 'Data telah diupdate');        
     }
     
     public function destroy(Payment $payment)
     {
+        if (!empty($payment->bukti_transaksi)) {
+            Storage::delete('public/bukti_transaksi/' . basename($payment->bukti_transaksi));
+        }
+    
+        // Hapus record dari database
         Payment::destroy($payment->nis);
-        return redirect('/payment')->with('success', 'Data Telah Dihapus');
+    
+        return redirect('/payment')->with('success', 'Data Berhasil Dihapus');
     }
     
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\logincontroller;
 use App\Http\Controllers\registercontroller;
 use App\Http\Controllers\profilecontroller;
 use App\Http\Controllers\siswaController;
+use App\Http\Middleware\RoleCek;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
@@ -21,21 +22,31 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 |
 */
 
-Route::get('/login', function () {
-    return view('master');
-});
 
-Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-
-Route::get('/home', [DashboardController::class, 'index'])->name('home');
 
 Route::resource('/siswa', SiswaController::class);
 
 Route::resource('/payment', PembayaranController::class);
 
-Route::get('/login',[loginController::class, 'index'])->middleware('guest');
-Route::post('/logout',[LoginController::class, 'logout']);
-Route::post('/login',[loginController::class, 'authenticate']);
+
+Route::group(['middleware' => ['auth', 'rolecek:admin']], function (){
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
+});
+
+Route::group(['middleware' => ['auth', 'rolecek:siswa']], function (){
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+});
+
+// Route::group(['middleware' => ['auth']], function() {
+    
+//     
+// });
+
+Route::get('/login',[LoginController::class, 'login'])->name('login');
+Route::post('/postlogin',[LoginController::class, 'postlogin'])->name('postlogin');
+Route::get('/logout',[LoginController::class, 'logout'])->name('logout');
+
+
 Route::get('/register',[registerController::class, 'index']);
 Route::post('/register',[registerController::class, 'store']);
 

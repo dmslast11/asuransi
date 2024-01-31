@@ -3,6 +3,7 @@
     <i class="fe fe-x"><span class="sr-only"></span></i>
   </a>
   <nav class="vertnav navbar navbar-light">
+   
     <!-- nav bar -->
     <div class="w-100 mb-4 d-flex">
       <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="#">
@@ -27,18 +28,24 @@
       <span>Components</span>
     </p>
     <ul class="navbar-nav flex-fill w-100 mb-2">
+      @if (auth()->user()->level == "admin")
       <li class="nav-item dropdown">
-        <a href="#siswa" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
-          <i class="fe fe-box fe-16"></i>
-          <span class="ml-3 item-text">Data Siswa</span>
-        </a>
-        <ul class="collapse list-unstyled pl-4 w-100" id="siswa">
-          <li class="nav-item">
-            <a class="nav-link pl-3" href="{{route('siswa.index')}}"><span class="ml-1 item-text">2023/2024</span>
-            </a>
-          </li>
-        </ul>
+        <li class="nav-item dropdown">
+          <a href="#siswa" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+            <i class="fe fe-box fe-16"></i>
+            <span class="ml-3 item-text">Data Siswa</span>
+          </a>
+          <ul class="collapse list-unstyled pl-4 w-100" id="siswa">
+            <li class="nav-item">
+              <a class="nav-link pl-3" href="{{route('siswa.index')}}"><span class="ml-1 item-text">2023/2024</span>
+              </a>
+            </li>
+          </ul>
+        </li>
       </li>
+      @endif
+      
+      @if (auth()->user()->level == "admin")
       <li class="nav-item dropdown">
         <a href="#bayar" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
           <i class="fe fe-credit-card fe-16"></i>
@@ -50,6 +57,20 @@
           </li>
         </ul>
       </li>
+      @endif
+      @if (auth()->user()->level == "siswa")
+      <li class="nav-item dropdown">
+        <a href="#pembayaran" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+          <i class="fe fe-credit-card fe-16"></i>
+          <span class="ml-3 item-text">Pembayaran</span>
+        </a>
+        <ul class="collapse list-unstyled pl-4 w-100" id="bayar">
+          <li class="nav-item">
+            <a class="nav-link pl-3" href=""><span class="ml-1 item-text">Pembayaran</span></a>
+          </li>
+        </ul>
+      </li>
+      @endif
     </ul>
   </nav>
 </aside>

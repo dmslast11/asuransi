@@ -36,7 +36,13 @@
                 <td>{{$pay->jurusan}}</td>
                 <td>{{$pay->tanggal}}</td>
                 <td>{{$pay->jumlah}}</td>
-                <td>{{$pay->bukti_transaksi}}</td>
+                <td>
+                    @if($pay->bukti_transaksi)
+                        <img src="{{ asset('storage/' . $pay->bukti_transaksi) }}" alt="Bukti Transaksi" style="max-width: 100px; max-height: 100px;">
+                    @else
+                        No Image
+                    @endif
+                </td>
                 <td>{{$pay->status}}</td>
                 <td align="center">
                     <div class="btn-group" role="group" aria-label="Action">
@@ -72,7 +78,7 @@
             </div>
             <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
                 <!-- Form for adding new data -->
-                <form action="#" method="post" id="addForm">
+                <form action="#" method="post" id="addForm" enctype="multipart/form-data">
                     @csrf
                     <!-- NIS -->
                     <div class="form-group">
@@ -129,8 +135,10 @@
 
                     <!-- Bukti Transaksi -->
                     <div class="form-group">
-                        <label for="bukti_add">Bukti Transaksi:</label>
-                        <input type="file" class="form-control-file @error('bukti_transaksi') is-invalid @enderror" id="bukti-add" name="bukti_transaksi" accept="image/*" required>
+                        <label for="image-add" class="control-label">Choose Image
+                        </label>
+                        <img id="imagePreview" src="#" class="img-preview img-fluid mb-3 col-sm-5" alt="Preview" style="max-width: 50%; max-height: 300px; display: none;">
+                        <input type="file" class="form-control @error('bukti_transaksi') is-invalid @enderror" id="image-add" name="bukti_transaksi" accept="image/*" onchange="previewImage()">
                         @error('bukti_transaksi')
                         <div class="alert alert-danger mt-2" role="alert">
                             {{ $message }}
@@ -163,7 +171,7 @@
 <!-- Start Modal Edit -->
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal-{{$paym->nis}}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLabel">Edit Data Siswa</h5>
@@ -172,7 +180,7 @@
                 </button>
             </div>
 
-            <form action="{{ route('payment.update', ['payment' => $paym->nis]) }}" method="POST">
+            <form action="{{ route('payment.update', ['payment' => $paym->nis]) }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <!-- Form for editing data -->
                     @method('PUT')
@@ -180,8 +188,8 @@
                     <!-- NIS -->
                     <div class="form-group">
                         <label for="nis_edit">NIS:</label>
-                        <input type="text" class="form-control @error('nis_edit') is-invalid @enderror" id="nis_edit" name="nis_edit" value="{{ old('nis_edit', $paym->nis) }}" readonly>
-                        @error('nis_edit')
+                        <input type="text" class="form-control @error('nis') is-invalid @enderror" id="nis_edit" name="nis" value="{{ $paym->nis }}" readonly>
+                        @error('nis')
                         <div class="alert alert-danger mt-2" role="alert">
                             {{ $message }}
                         </div>
@@ -190,8 +198,8 @@
                     <!-- Nama Siswa -->
                     <div class="form-group">
                         <label for="nama_siswa_edit">Nama Siswa:</label>
-                        <input type="text" class="form-control @error('nama_siswa_edit') is-invalid @enderror" id="nama_siswa_edit" name="nama_siswa_edit" value="{{ old('nama_siswa_edit', $paym->nama_siswa) }}" required>
-                        @error('nama_siswa_edit')
+                        <input type="text" class="form-control @error('nama_siswa_edit') is-invalid @enderror" id="nama_siswa_edit" name="nama_siswa" value="{{ $paym->nama_siswa }}">
+                        @error('nama_siswa')
                         <div class="alert alert-danger mt-2" role="alert">
                             {{ $message }}
                         </div>
@@ -200,19 +208,19 @@
                     <!-- Jurusan -->
                     <div class="form-group">
                         <label for="jurusan_edit">Jurusan:</label>
-                        <select class="form-control" id="jurusan_edit" name="jurusan_edit" required>
+                        <select class="form-control" id="jurusan_edit" name="jurusan">
                             <!-- Populate options based on your data -->
-                            <option value="Rekayasa Perangkat Lunak" @if($paym->jurusan == 'Rekayasa Perangkat Lunak') selected @endif>Rekayasa Perangkat Lunak</option>
-                            <option value="Teknik Komputer dan Jaringan" @if($paym->jurusan == 'Teknik Komputer dan Jaringan') selected @endif>Teknik Komputer dan Jaringan</option>
-                            <option value="Multimedia" @if($paym->jurusan == 'Multimedia') selected @endif>Multimedia</option>
-                            <option value="Animasi" @if($paym->jurusan == 'Animasi') selected @endif>Animasi</option>
+                            <option value="Rekayasa Perangkat Lunak" {{ $paym->jurusan == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>Rekayasa Perangkat Lunak</option>
+                            <option value="Teknik Komputer dan Jaringan" {{ $paym->jurusan == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>Teknik Komputer dan Jaringan</option>
+                            <option value="Multimedia" {{ $paym->jurusan == 'Multimedia' ? 'selected' : '' }}>Multimedia</option>
+                            <option value="Animasi" {{ $paym->jurusan == 'Animasi' ? 'selected' : '' }}>Animasi</option>
                             <!-- Add more options if needed -->
                         </select>
                     </div>
                      <!-- Tanggal -->
                      <div class="form-group">
                         <label for="tanggal">Tanggal:</label>
-                        <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal" name="tanggal" value="{{ $pay->tanggal }}" required>
+                        <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal" name="tanggal" value="{{ $pay->tanggal }}">
                         @error('tanggal')
                             <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
                         @enderror
@@ -220,27 +228,31 @@
                     <!-- Jumlah -->
                     <div class="form-group">
                         <label for="jumlah">Jumlah:</label>
-                        <input type="text" class="form-control @error('jumlah') is-invalid @enderror" id="jumlah" name="jumlah" value="{{ $pay->jumlah }}" required>
+                        <input type="text" class="form-control @error('jumlah') is-invalid @enderror" id="jumlah" name="jumlah" value="{{ $pay->jumlah }}">
                         @error('jumlah')
                             <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
                         @enderror
                     </div>
                     <!-- Bukti Transaksi -->
                     <div class="form-group">
-                        <label for="bukti_edit">Bukti Transaksi:</label>
-                        <input type="file" class="form-control-file @error('bukti_transaksi') is-invalid @enderror" id="bukti_edit" name="bukti_transaksi" accept="image/*">
-                        @error('bukti_transaksi')
-                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
-                        @enderror
-                        <!-- Menampilkan gambar bukti transaksi yang sudah ada -->
-                        @if($pay->bukti_transaksi)
-                            <img src="{{ asset('storage/'. $pay->bukti_transaksi) }}" alt="Bukti Transaksi" style="max-width: 100%; height: auto;">
+                        <label for="image-edit" class="control-label"> Choose Image </label>
+                        @if($paym->bukti_transaksi)
+                            <img id="imgPreview" src="{{ asset('storage/'. $paym->bukti_transaksi) }}" class="img-preview img-fluid mb-3 col-sm-5 d-block" alt="Preview" style="max-width: 50%; max-height: 300px;">
+                        @else
+                            <img id="imgPreview" class="img-preview img-fluid mb-3 col-sm-5" alt="Preview" style="max-width: 50%; max-height: 300px; display: none;">
                         @endif
+                    
+                        <input type="file" class="form-control @error('bukti_transaksi') is-invalid @enderror" id="image-edit" name="bukti_transaksi" accept="image/*" onchange="previewImagee()">
+                        @error('bukti_transaksi')
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
                     </div>
                     <!-- Status -->
                     <div class="form-group">
                         <label for="status">Status:</label>
-                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
+                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status">
                             <option value="Lunas" @if($pay->status == 'Lunas') selected @endif>Lunas</option>
                             <option value="Belum Lunas" @if($pay->status == 'Belum Lunas') selected @endif>Belum Lunas</option>
                         </select>

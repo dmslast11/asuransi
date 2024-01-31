@@ -44,18 +44,7 @@ class SiswaController extends Controller
             'alamat_pkl' => 'required',
         ]);
     
-        // Logging untuk melihat nilai validateData
-        info('Validated Data:', $validateData);
-    
-        try {
-            $result = Siswa::where('nis', $siswa->nis)->update($validateData);
-        } catch (\Exception $e) {
-            // Logging untuk melihat exception
-            info('Exception:', $e->getMessage());
-        }
-    
-        // Logging untuk melihat hasil dari operasi update
-        info('Update Result:', $result);
+        Siswa::where('nis', $siswa->nis)->update($validateData);
     
         return redirect('/siswa')->with('success', 'Data telah diupdate');  
     }

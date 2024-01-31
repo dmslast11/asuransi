@@ -3,42 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\pembayaran;
 use Illuminate\Support\Facades\Auth;
 
-class logincontroller extends Controller
+class LoginController extends Controller
 {
-    public function index()
-    {
-       
-return view('login.index',[
-'title'=>'login'
-
-]);
+    public function login(){
+        return view('login.login');
     }
-    public function authenticate(Request $request){
-        $credentials=$request->validate([
-            'email'=>'required|email:dns',
-        'password'=>'required'
-        ]);
-        if(auth::attempt($credentials)){
-            $request->session()->regenerate();
-            return redirect()->intended('/Dashbord');
+
+    public function postlogin(Request $request){
+        if(Auth::attempt($request->only('email', 'password'))){
+            return redirect('/dashboard');
         }
-        return back()->with('loginError','Login Failed');
-    
-    
- 
-
+        return redirect('/login');
     }
-    public function logout(Request $request){
 
+    public function logout(){
         Auth::logout();
- 
-        $request->session()->invalidate();
-     
-        $request->session()->regenerateToken();
-     
         return redirect('/login');
     }
 }
