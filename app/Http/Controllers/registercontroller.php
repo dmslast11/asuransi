@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
-class registercontroller extends Controller
+class RegisterController extends Controller
 {
-    public function index()
-    {
-       
-return view('register.index',[
-]);
-    
+    public function register(){
+        return view('register.index');
     }
-    public function store(Request $request){
-   $validatedData=$request-> validate([
-        'name'=>'required|max:255',
-        'email'=>'required|email:dns|unique:users',
-        'password'=>'required|min:3|max:255'
+
+    public function register_proses(Request $request){
+        $request->validate([
+            'name' => 'required',
+            'level' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|confirmed|min:8',
+            'password_confirmation' => 'required|same:password'
+        ]);
         
-    ]);
-    $validatedData['password']=Hash::make($validatedData['password']);
-   User::create($validatedData);
-   $request->session()->flash('success','Registration successfull! Please Log In');
-   return redirect('/register')->with('success','Registration successfull! Please Log In');
-}
+        $user = User::create($request->except('_token'));
+
+        return redirect()->route('login')->with('success', 'Akun berhasil dibuat, Silahkan login terlebih dahulu');
+    
+        // return redirect()->route('login')->with('success', 'Register telah berhasil, silahkan login terlebih dahulu');
+    }
 }

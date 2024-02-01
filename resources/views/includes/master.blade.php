@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/jpg" href="{{asset('asetlog/images/Logo.jpg')}}">
     <title>Safe Shield</title>
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="{{asset('assets/css/simplebar.css')}}">
@@ -205,6 +207,9 @@
     <script src='{{asset('assets/js/quill.min.js')}}'></script>
 
     <!-- jQuery -->
+    <script type="text/javascript" 
+        src={{config('midtrans.snap_url')}} 
+        data-client-key={{config('midtrans.client_key')}}></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Tambahkan script DataTables -->
@@ -340,7 +345,7 @@
       });
     </script>
 
-    <script>
+    {{-- <script>
       $(document).ready(function () {
           // Fungsi untuk memberikan format pada input biaya
           $('#jumlah').on('input', function () {
@@ -365,6 +370,8 @@
               return 'Rp ' + formattedValue;
           }
       });
-    </script>
+    </script> --}}
+
+    @stack('scripts')
   </body>
 </html>

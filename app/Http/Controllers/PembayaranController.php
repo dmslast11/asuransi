@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 class PembayaranController extends Controller
@@ -68,7 +70,7 @@ class PembayaranController extends Controller
             $validateData['bukti_transaksi'] = $request->file('bukti_transaksi')->store('public/bukti_transaksi');
         }
         
-        Payment::where('nis', $payment->nis)->update($validateData);
+        Payment::where('id', $payment->id)->update($validateData);
         
         return redirect('/payment')->with('success', 'Data telah diupdate');        
     }
@@ -80,9 +82,8 @@ class PembayaranController extends Controller
         }
     
         // Hapus record dari database
-        Payment::destroy($payment->nis);
+        Payment::destroy($payment->id);
     
         return redirect('/payment')->with('success', 'Data Berhasil Dihapus');
     }
-    
 }

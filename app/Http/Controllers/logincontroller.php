@@ -12,14 +12,14 @@ class LoginController extends Controller
     }
 
     public function postlogin(Request $request){
-        if(Auth::attempt($request->only('email', 'password'))){
+        if(Auth::attempt($request->only('nis', 'password'))){
             return redirect('/dashboard');
         }
-        return redirect('/login');
+        return redirect('/');
     }
 
     public function logout(){
         Auth::logout();
-        return redirect('/login');
+        return redirect('/');
     }
 }

@@ -46,11 +46,11 @@
                 <td>{{$pay->status}}</td>
                 <td align="center">
                     <div class="btn-group" role="group" aria-label="Action">
-                        <form action="{{ route('payment.destroy', ['payment' => $pay->nis]) }}" method="post">
+                        <form action="{{ route('payment.destroy', ['payment' => $pay->id]) }}" method="post">
                             @method('DELETE')
                             @csrf
                             <div class="d-flex justify-content-center">
-                                <a href="#" class="badge btn-primary border-0 btn-sm mx-1 edit-button" data-toggle="modal" data-target="#editModal-{{$pay->nis}}">
+                                <a href="#" class="badge btn-primary border-0 btn-sm mx-1 edit-button" data-toggle="modal" data-target="#editModal-{{$pay->id}}">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <button class="badge btn-danger border-0 btn-sm mx-1 show_confirm">
@@ -80,6 +80,7 @@
                 <!-- Form for adding new data -->
                 <form action="#" method="post" id="addForm" enctype="multipart/form-data">
                     @csrf
+                    
                     <!-- NIS -->
                     <div class="form-group">
                         <label for="nis">NIS:</label>
@@ -125,7 +126,7 @@
                     <!-- Jumlah -->
                     <div class="form-group">
                         <label for="jumlah">Jumlah:</label>
-                        <input type="text" class="form-control @error('jumlah') is-invalid @enderror" id="jumlah" name="jumlah" required>
+                        <input type="number" class="form-control @error('jumlah') is-invalid @enderror" id="jumlah" name="jumlah" required>
                         @error('jumlah')
                         <div class="alert alert-danger mt-2" role="alert">
                             {{ $message }}
@@ -170,7 +171,7 @@
 @foreach($payment as $paym)
 <!-- Start Modal Edit -->
 <!-- Edit Modal -->
-<div class="modal fade" id="editModal-{{$paym->nis}}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal-{{$paym->id}}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -180,11 +181,12 @@
                 </button>
             </div>
 
-            <form action="{{ route('payment.update', ['payment' => $paym->nis]) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('payment.update', ['payment' => $paym->id]) }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <!-- Form for editing data -->
                     @method('PUT')
                     @csrf
+                    <input type="hidden" value="{{$paym->id}}" id="id">>
                     <!-- NIS -->
                     <div class="form-group">
                         <label for="nis_edit">NIS:</label>

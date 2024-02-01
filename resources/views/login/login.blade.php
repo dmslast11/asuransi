@@ -11,7 +11,7 @@
 <body>
     <div class="wrapper">
         <div class="logo">
-            <img src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-bird-symbols-png-logo-0.png" alt="">
+            <img src="{{asset('asetlog/images/Logo.jpg')}}" alt="">
         </div>
         <div class="text-center mt-4 name">
             Log In
@@ -20,7 +20,7 @@
 			{{ csrf_field() }}
             <div class="form-field d-flex align-items-center">
                 <span class="fa fa-user"></span>
-                <input type="text" name="email" id="userName" placeholder="Username">
+                <input type="text" name="nis" id="userName" placeholder="Username">
             </div>
             <div class="form-field d-flex align-items-center">
                 <span class="fa fa-key"></span>
