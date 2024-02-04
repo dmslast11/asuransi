@@ -41,8 +41,13 @@ Route::post('/add', [PembayaranController::class, 'add']);
 Route::get('/transaksi', [BayarController::class, 'index'])->name('transaksi');
 Route::post('/check', [BayarController::class, 'check']);
 
+Route::get('/register',[RegisterController::class, 'register'])->name('register');
+Route::post('/register_proses',[RegisterController::class, 'register_proses'])->name('register_proses');
+
 Route::get('/',[LoginController::class, 'login'])->name('login');
 Route::post('/postlogin',[LoginController::class, 'postlogin'])->name('postlogin');
 Route::get('/logout',[LoginController::class, 'logout'])->name('logout');
 
-Route::resource('profile',profilecontroller::class);
+
+Route::get('/profile', [Profilecontroller::class, 'index'])->name('profile');
+Route::post('/edit-profile', [Profilecontroller::class, 'update'])->name('profile.update');

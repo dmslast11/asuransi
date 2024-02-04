@@ -76,16 +76,19 @@
       <span>Profile</span>
     </p>
 
+
     <ul class="navbar-nav flex-fill w-100 mb-2">
+      @if (auth()->user()->level == "admin")
       <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{route('register')}}">
           <i class="fas fa-registered fe-16"></i>
           <span class="ml-3 item-text">Register</span>
         </a>
       </li>
+      @endif
 
       <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{route('profile')}}">
           <i class="fe fe-user fe-16"></i>
           <span class="ml-3 item-text">Profile</span>
         </a>
